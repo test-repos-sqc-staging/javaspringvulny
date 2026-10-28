@@ -21,6 +21,7 @@ public class PayloadController {
 
     private static final char[] chars = new char[]{'a','b','c',' ','\n'};
     private static Map<Integer, byte[]> payloadCache = new ConcurrentHashMap();
+    private final Random random = new Random();
 
     @Value("${payload.start-size:2048}")
     private int startPayloadSize = 2048;
@@ -36,12 +37,12 @@ public class PayloadController {
 
     public void sleepy() {
         if ((payloadDelayStart > 0 || payloadDelayEnd > 0) && payloadDelayEnd > payloadDelayStart) {
-            Random random = new Random();
             Long sleepFor = random.nextLong(payloadDelayStart, payloadDelayEnd);
             try {
                 Thread.sleep(sleepFor);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                Thread.currentThread().interrupt();
             }
         }
     }
